@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="signup.css">
+    <!--Post it icons created by Good Ware - Flaticon-->
+    <link rel="icon" href="https://www.flaticon.com/free-icons/post-it" >
+    <title>S'N'N || Sign-Up</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+
+    <!-- HEADER @ThomasClocheret-->
+    <header>
+        <a href="/"><img src="https://clochie.com/intoll/webassets/Logo.png"></a>
+        <div class="sign">
+           <p id="Sign-In">Log In</p>
+           <p id="Sign-Up">Sign Up</p>
+        </div>
+    </header>
+
+    <main>
+       
+        <div class="block1">
+            <h1>Sign Up</h1>
+            <form id="form-sign-up"  method="POST" action="/register">
+                <input class="checkInput" id="name" placeholder="first name " type="text" name="name">
+                <input class="checkInput" placeholder="last name " type="text" name="Lname">
+                <input  placeholder="user@mail.com" type="email" name="email" {{#if message.email}} class="errorInput"{{/if}} class="checkInput">
+                <div class="message">
+                {{#if message.email}}
+                <h5>{{message.email}}</h5>
+                {{/if}}
+                </div>
+
+                <input class = "checkInput input-phone" placeholder="+32 ..." type="text" name="telephone"  {{#if message.phone}} class="errorInput"{{/if}} class ="checkInput" >
+                <div class="message">
+                {{#if message.phone}}
+                <h5>{{message.phone}}</h5>
+                {{/if }}
+                </div>
+               
+                <input class = "checkInput" placeholder="password" type="password" name="password"  {{#if message.password}} class="errorInput"{{/if}} class ="checkInput" >
+                <div class="message">
+                {{#if message.password}}
+                <h5>{{message.password}}</h5>
+                {{/if }}
+                </div>
+                <input placeholder="password confirm" type="password" name="passwordconfirm" {{#if message.password}} class="errorInput"{{/if}} class ="checkInput">
+                <div class="message">
+                {{#if message.password}}
+                <h5>{{message.password}}</h5>
+                {{/if }}
+                </div>
+                <div class="message">
+                {{#if message.id}}
+                <h5>{{message.id}}</h5>
+                {{/if }}
+                </div>
+
+        
+            
+                <div class="flex-box">
+                    <p>I already have an account. <span id="Sign-Up-Sub">Log in </span></p>
+                    <button id="SubmitBtn" type="submit"><ion-icon name="arrow-forward-outline"></ion-icon></button>
+                </div>    
+            </form>      
+        </div>
+        
+    </main> 
+    <script src="cleave.min.js"></script>
+    <script src="cleave-phone.{country}.js"></script>
+    <script src="signup.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

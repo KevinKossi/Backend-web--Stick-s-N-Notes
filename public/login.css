@@ -1,0 +1,198 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Ubuntu' , sans-serif;
+    scroll-behavior: smooth;
+}
+:root
+{
+    --background: #F8F4EB;
+    --white: #fff;
+    --grey: #f5f5f5;
+    --black1: #222;
+    --back2: #999;
+    --purple: #5100B8;
+    --rose: #FF59E4;
+    --c1 : #fff5f5;
+    --text: #1f3246;
+}
+
+.spacer{
+
+    aspect-ratio: 900/300;
+    background-repeat:no-repeat ;
+    background-position: center;
+    background-size: cover;
+}
+.layer1{
+    background-image: url('./layer1.svg');
+    margin-bottom: -380px;
+}
+
+#Home:hover, #About:hover, #Help:hover{
+    color: #f8f4eb;
+    background-color: #a259ff;
+    transition-property: background-color;
+    transition-duration: 300ms;
+    transition-timing-function: ease;
+    border-radius: 8%;
+}
+
+/* HEADER @Thomas Clocheret*/
+body 
+{
+    background-color: var(--background);
+}
+header
+{
+    background-color: var(--background);
+    display: flex;
+    width: 100%;
+}
+header a
+{
+    height: 30px;
+    width: 10%;
+    margin-top: 70px;
+    margin-left: 10%;
+    margin-right: 60%;
+}
+.sign
+{
+    width: 165px;
+    display: flex;
+    margin-top: 70px;
+    height: 40px;
+}
+.sign p
+{
+    margin-left: 10px;
+    background-color: var(--purple);
+    border-radius: 10px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    color: var(--white);
+    cursor: pointer;
+}
+
+
+
+.block1
+{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+.block1 h1
+{
+    color: var(--purple);
+    font-size: 80px;
+    text-align: center;
+    margin-top: 30px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 3rem;
+}
+#form-sign-up
+{
+    text-align: center;
+}
+input
+{
+    height: 70px;
+    padding-left: 20px;
+    border-radius: 30px;
+    width: 50%;
+    border-width: 0;
+    margin-top: 10px;
+    background-color: var(--white);
+    box-shadow: 0 7px 25px rgb(0 0 0 / 8%);
+}
+.flex-box
+{
+    display: flex;
+    text-align: center;
+    margin-left: 40%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    margin-right: auto;
+}
+#Sign-Up-Sub
+{
+    color: var(--purple);
+    text-decoration: underline;
+    cursor: pointer;
+}
+.block1 p
+{
+    margin-top: 15px;
+    text-align: center;
+}
+button
+{
+    border: none;
+    margin-left: 18%;
+}
+#SubmitBtn
+{
+    color: var(--purple);
+    background-color: var(--background);
+    text-decoration: underline;
+    cursor: pointer;
+}
+button ion-icon
+{
+    position: relative;
+    z-index: 1;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: var(--purple);
+    color: var(--white);
+    border-width: 0;
+    cursor: pointer;
+    box-shadow: 0 7px 25px rgb(0 0 0 / 8%);
+}
+.containerCaptcha
+{
+    width: 300px;
+    margin-left: calc(50% - 150px);
+    margin-top: 10px;
+}
+
+/* input outlinen in het rood wanneer er verkeerde gegevens worden ingegeven  */
+
+.errorInput:focus {
+    outline-color: red;
+}
+
+.errorInput{
+    outline-color: red;
+    border: red;
+    box-shadow: 4px 4px 4px 4px rgba(245, 7, 7, 0.2);
+}
+
+.checkInput:focus {
+    outline-color: var(--purple);
+}
+
+.checkInput {
+    outline-color: #5100B8;
+}
+
+h5{
+    display: inline-block;
+    text-align: center;
+    font-family: 'Ubuntu' , sans-serif;
+    color: red; 
+}
+.message{
+    margin-top: 0,3rem;
+}
+
