@@ -1,25 +1,30 @@
+const { json } = require('body-parser');
 let express = require('express')
 let router = express.Router()  // We gaan een router van de express instance nodig hebben
+
+
+const pool = require(`../db`)
+
 
 router.get('/', (req, res) => {
     res.render('login')
   })
 
 router.get('/app', (req, res) => {
-    console.log(req.params + "is what i received from login / register ")
-    const userId = req.params.userId
-    
-    db.query('SELECT * FROM notes WHERE userId = ? ', [userId], (err,result ) => {
+ const id = req.query.id
+    pool.query('SELECT * FROM notes WHERE user = ? ', [id], (err,result ) => {
       if (err) {
         console.log(err)
 
       } else {  
-
-        return response.render("app", {
-          result
-        });      }
+        const empty = "There are no notes at this moment ! click on the "+" button to add one"
+        result.empty = empty;
+        result.userId  = id;
+        return res.render("app", {
+          result,
+          
+        }); }
     })
-
   })
 
 router.get('/signup', (req, res) => {

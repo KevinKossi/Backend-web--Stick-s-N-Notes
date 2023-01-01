@@ -28,7 +28,7 @@
                 <input placeholder="Email" type="email" name="Email" {{#if message.email}} class="errorInput"{{/if}} class="checkInput">
                
                 <div>
-                {{#if message.email != ""}}
+                {{#if message.email}}
                  <h5>{{message.email}}</h5>
                 {{/if}}
                 </div>
@@ -36,13 +36,13 @@
                 <input placeholder="Password" type="password" name="Password"{{#if message.password}} class="errorInput"{{/if}} class="checkInput">
                 
                 <div>
-                {{#if message.password != ""}}
+                {{#if message.password}}
                 <h5>{{message.password}}</h5>
                 {{/if}}
                 </div>
             
                 <div class="flex-box">
-                    <p>Don't have an account? <span id="Sign-In-Sub">Sign Up</span></p>
+                    <p>Don't have an account? <span id="Sign-In-Sub"><a href="signup"> Sign Up</a></span></p>
                     <button  id="SubmitBtn" type="submit"><ion-icon name="arrow-forward-outline"></ion-icon></button>
                 </div>  
             </form>

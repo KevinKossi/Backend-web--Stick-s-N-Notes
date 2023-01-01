@@ -3,16 +3,18 @@ let app = express()                 // We starten een nieuwe express app en make
 const bodyParser = require('body-parser');
 const path = require('path');
 const dotenv = require('dotenv');
-const mysql = require("mysql");
+
 const bcrypt = require("bcrypt")
 const session = require('express-session');
 const mysqlStore = require('express-mysql-session')(session);
+
+const pool = require("./db")
+let Router = require('./routes/Router')
 
 
 const port = process.env.PORT || 3250;
 app.listen(port, () => console.info('Server started at port 3250'))  
 
-let Router = require('./routes/Router')
 
 app.use(Router)
 
@@ -44,20 +46,22 @@ dotenv.config({ path:'./.env' });
 
 
 // //Connection User Data Base 
-const db = mysql.createPool({
-  host: process.env.DATABASE_HOST, // nu local, indien je server hebt, schrijf je IP adres van server,
-  user: process.env.DATABASE_USER,
-  password:process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE,
-  port: process.env.DATABASE_PORT
-});
 
-db.getConnection(function(err) {
+
+pool.getConnection(function(err) {
     if (err) throw err;
     console.log("Connected to database");
   });
 
 
+
+
+  app.use(session({
+    secret: 'Mpxnchii',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }))
 // URL ENDPOINTS 
 app.post('/register',(req, res) => {
   console.log(req.body)
@@ -68,12 +72,12 @@ app.post('/register',(req, res) => {
   const Password = req.body.password;
   const PwdConfirm = req.body.passwordconfirm;
   const Phone = req.body.telephone;
-  // const salt = bcrypt.genSaltSync(10);
-  // const hash = bcrypt.hashSync(Password, salt);
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(Password, salt);
 
   if (Password == PwdConfirm ) {
       
-  db.query("INSERT INTO users (firstname, email, lastname, password, phone) VALUES (?, ?, ?, ?,?)", [Firstname, Email, Lastname, hash, Phone], (error, results) => {
+  pool.query("INSERT INTO users (firstname, email, lastname, password, phone) VALUES (?, ?, ?, ?,?)", [Firstname, Email, Lastname, hash, Phone], (error, results) => {
 
     if (error) {
         console.log(error);
@@ -82,19 +86,19 @@ app.post('/register',(req, res) => {
             "mail": bad,
             "registration": false
         };
-        return response.render("signup", {
+        return res.render("signup", {
           message
       });
     }
     else {
         let good = "data has been succesfully transfered to the database";
 
-        db.query("SELECT id FROM users WHERE email = ? ", [Email], (error, resu) => {
+        pool.query("SELECT id FROM users WHERE email = ? ", [Email], (error, resu) => {
             if (error) {
                 console.log(error);
                 let bad = 'cannot receive ID from the user ';
                 const message = {
-                    "id": bad,
+                    "message": bad,
                     "registration": false
                 };
                 return res.render("signup", {
@@ -108,11 +112,11 @@ app.post('/register',(req, res) => {
                     "email": Email,
                     "firstname": Firstname,
                     "lastname": Lastname,
+                    "auth": true
                 }
-
-                return res.redirect("/app", {
-                  result
-              });
+          
+                module.exports.USER = result;
+                return res.redirect(`/app?id=${resu[0].id}`);
             }
         })
     }
@@ -147,7 +151,7 @@ app.post('/login',   (req, response) => {
     userId: ``
   }
 
-  db.query("SELECT email, password, id FROM users WHERE  email = ? ",[Email], (error,results ) => {
+  pool.query("SELECT email, password, id FROM users WHERE  email = ? ",[Email], (error,results ) => {
     var resultArray = Object.values(JSON.parse(JSON.stringify(results)))
 
      // als de account bestaat:
@@ -169,16 +173,16 @@ app.post('/login',   (req, response) => {
 
             req.session.isAuth = true;
             loggedin = true;
-            module.exports = loggedin;
+            // module.exports = loggedin;
             console.log(req.session.id);
-            module.exports.cookiedough = req.session.id;
+            // module.exports.cookiedough = req.session.id;
             module.exports.cookieauth =  req.session.isAuth;
             //  met sessionstore werken waarbij ik dat in een globale var steek of direct meegeven als params 
            data.email = Email;
            data.userId = results[0]["id"];
 
            
-            console.log( " cookies sent is: " + req.session.auth );
+            // console.log( " cookies sent is: " + req.session.auth );
             console.log("User: ",Email,"just logged in!"," -->  pass to app ! ");
             response.redirect("/app", { data});
 
@@ -204,3 +208,108 @@ app.post('/login',   (req, response) => {
 
     });
 });
+
+// for the notes 
+app.post('/notes', (req,res) => {
+  const userId = req.body.userId
+  const content = req.body.content
+  pool.query("INSERT INTO notes (user, content) VALUES (?, ?)", [userId, content], (error, results) => {
+
+    if (error) {
+        console.log(error);
+        let bad = 'the note already exists ';
+        const message = {
+            "note": bad,
+            "insertion": false
+        };
+        return res.render("app", {
+          message
+      });
+    }
+    else {
+        let good = "data has been succesfully transfered to the database";
+
+        pool.query("SELECT id FROM notes WHERE user = ? ", [userId], (error, resu) => {
+            if (error) {
+                console.log(error);
+                let bad = 'cannot receive ID from the user ';
+                const message = {
+                    "id": bad,
+                    "registration": false
+                };
+                return res.render("signup", {
+                  message
+              });
+            } else {
+                const result = {
+                    "reason": good,
+                    "registration": true,
+                    "userId": resu[0].id,
+                    "email": Email,
+                    "firstname": Firstname,
+                    "lastname": Lastname,
+                    "auth": true
+                }
+                
+                // module.exports.userData = result;
+                return res.redirect("/app");
+            }
+        })
+    }
+});
+
+})
+app.delete('/notes', (req,res) => {
+  // const userId = userData.userId
+  // const noteId = req.params.noteId
+  const resu = {
+    message:"",
+    deletion:false
+  }
+
+  pool.query('DELETE FROM notes WHERE id = ?  AND user = ?', [noteId,userId], (err,result ) => {
+    if (err) {
+      console.log(err)
+
+    } else {  
+      resu.message = " note has been succesfully deleted !";
+      resu.deletion = true 
+      
+      return res.render("app", {
+        resu
+      }); }
+  })
+  
+})
+
+app.put('/notes', (req,res) => {
+  // const userId = userData.userId
+  
+  pool.query('SELECT * FROM notes WHERE userId = ? ', [userId], (err,result ) => {
+    if (err) {
+      console.log(err)
+
+    } else {  
+
+      return response.render("app", {
+        result
+      }); }
+  })
+
+  
+})
+app.get('/notes', (req, res) => {
+  // console.log(userData + "is what i received resultrom login / register ")
+  // const userId = userData.userId
+  
+  pool.query('SELECT * FROM notes WHERE userId = ? ', [userId], (err,result ) => {
+    if (err) {
+      console.log(err)
+
+    } else {  
+
+      return response.render("app", {
+        result
+      }); }
+  })
+})

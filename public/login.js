@@ -3,4 +3,4 @@ let signupBtn = document.getElementById('Sign-Up');
 let emailBtn = document.getElementById('EmailBtn');
 let signupsub = document.getElementById('Sign-Up-Sub');
 
-console.log(" je zit er mooi in ! ")
+signupsub.addEventListener('click', () =>  document.location = '/signup')
