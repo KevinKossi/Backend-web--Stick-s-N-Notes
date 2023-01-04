@@ -2,17 +2,17 @@
 
 
 const notesContainer = document.getElementById("app");
+console.log(notesContainer + "container");
 const addNoteButton = notesContainer.querySelector(".add-note");
+console.log(addNoteButton + " adding button ");
 let x = document.getElementById("profile-class");
 let notes = document.getElementById("app");
 let state = document.getElementById("status")
 let empty = document.querySelector("#empty")
-let profile = document.querySelector("#profle")
+let profile = document.querySelector("#profile")
 
-let myName = document.querySelector("#myName")
-let myEmail = document.querySelector("#myEmail")
-let myPhone = document.querySelector("#myPhone")
-let myAddress = document.querySelector("#myAddress")
+const userId = document.querySelector("#userId").value
+
 
 
 getNotes().forEach((note) => {
@@ -98,27 +98,12 @@ function Myfunction() {
   state.style.display = "none";
 }
 
-profile.addEventListener("click", () => {
-const userId = document.querySelector("#userId").value
-  const profileData = async (userId) => {
+profile.addEventListener('click', () => {
 
-    await fetch(`http://localhost:3250/profile?uid=${userId}`, {method: "GET"})
-    .then( async res => await res.json())
-    .then(resJson =>{
-
-      myAddress.innerHTML = "*******";
-      myEmail.innerHTML = resJson.myEmail;
-      myName.innerHTML = `${resJson.firstname}  ${resJson.lastname}`
-      myPhone.innerHTML = resJson.myPhone;
-      
-
-
-    } )
-
-
-  }
-
+  document.location = `/account?userId=${userId}`
 })
+
+
 
  
 

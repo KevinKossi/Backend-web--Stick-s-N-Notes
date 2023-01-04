@@ -176,7 +176,7 @@ app.post('/login',   (req, response) => {
             // module.exports = loggedin;
             console.log(req.session.id);
             // module.exports.cookiedough = req.session.id;
-            module.exports.cookieauth =  req.session.isAuth;
+            // module.exports.cookieauth =  req.session.isAuth;
             //  met sessionstore werken waarbij ik dat in een globale var steek of direct meegeven als params 
            data.email = Email;
            data.userId = results[0]["id"];
@@ -184,7 +184,7 @@ app.post('/login',   (req, response) => {
            
             // console.log( " cookies sent is: " + req.session.auth );
             console.log("User: ",Email,"just logged in!"," -->  pass to app ! ");
-            response.redirect("/app", { data});
+            response.redirect(`/app?id=${data.userId}`);
 
           }else{
             console.log( req.body)
@@ -241,15 +241,15 @@ app.post('/notes', (req,res) => {
                   message
               });
             } else {
-                const result = {
-                    "reason": good,
-                    "registration": true,
-                    "userId": resu[0].id,
-                    "email": Email,
-                    "firstname": Firstname,
-                    "lastname": Lastname,
-                    "auth": true
-                }
+                // const result = {
+                //     "reason": good,
+                //     "registration": true,
+                //     "userId": resu[0].id,
+                //     "email": Email,
+                //     "firstname": Firstname,
+                //     "lastname": Lastname,
+                //     "auth": true
+                // }
                 
                 // module.exports.userData = result;
                 return res.redirect("/app");
@@ -265,9 +265,10 @@ app.delete('/notes', (req,res) => {
   const resu = {
     message:"",
     deletion:false
+
   }
 
-  pool.query('DELETE FROM notes WHERE id = ?  AND user = ?', [noteId,userId], (err,result ) => {
+  pool.query('DELETE FROM notes WHERE note_id = ?  AND user_id = ?', [noteId,userId], (err,result ) => {
     if (err) {
       console.log(err)
 
@@ -285,7 +286,7 @@ app.delete('/notes', (req,res) => {
 app.put('/notes', (req,res) => {
   // const userId = userData.userId
   
-  pool.query('SELECT * FROM notes WHERE userId = ? ', [userId], (err,result ) => {
+  pool.query('SELECT * FROM notes WHERE user_id = ? ', [userId], (err,result ) => {
     if (err) {
       console.log(err)
 
@@ -298,11 +299,12 @@ app.put('/notes', (req,res) => {
 
   
 })
+
 app.get('/notes', (req, res) => {
   // console.log(userData + "is what i received resultrom login / register ")
   // const userId = userData.userId
   
-  pool.query('SELECT * FROM notes WHERE userId = ? ', [userId], (err,result ) => {
+  pool.query('SELECT * FROM notes WHERE user_id = ? ', [userId], (err,result ) => {
     if (err) {
       console.log(err)
 
@@ -312,4 +314,15 @@ app.get('/notes', (req, res) => {
         result
       }); }
   })
+})
+
+// for the user 
+app.get('/profile', (req, res) => {
+
+  const userId = req.query.uid
+
+  pool.query("SELECT * FROM users WHERE user_id = ? ", [userId], (err, res) => {
+    
+  })
+
 })

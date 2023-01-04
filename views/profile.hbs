@@ -1,99 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S'N'N || my profile </title>
-    <link rel="stylesheet" href="/src/profile.css">
-</head>
-<body>
-    <div class="profile-class">
-    <div class="container">
-        <div class="main-body">
-        
-        
-              <div class="row gutters-sm">
-                <div class="col-md-4 mb-3">
-                  <div class="card">
-                    <div class="card-body">
-                      <div class="d-flex flex-column align-items-center text-center">
-                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
-                        <div class="mt-3">
-                          <h4>John Doe</h4>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Simple Sidebar - Start Bootstrap Template</title>
+        <!-- Favicon-->
+        {{!-- <link rel="icon" type="image/x-icon" href="/public/assets/sticky.ico" /> --}}
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="app.css" rel="stylesheet" />
+        <link rel="stylesheet" href="sidebar.css">
+    </head>
+    <body>
+        <div class="d-flex" id="wrapper">
+            <!-- Sidebar-->
+            <div class="border-end bg-white" id="sidebar-wrapper">
+                <div class="sidebar-heading border-bottom bg-light">Sticks N Notes</div>
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Dashboard</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Overview</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Events</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3 " id="profile"  href="#">Profile</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">logout</a>
                 </div>
-                <div class="col-md-8">
-                  <div class="card mb-3">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <h6 class="mb-0">Full Name</h6>
+            </div>
+            <!-- Page content wrapper-->
+            <div id="page-content-wrapper">
+                <!-- Top navigation-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <div class="container-fluid">
+                        <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                                <li class="nav-item active"><a class="nav-link" href="#!">Home</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#!">Link</a></li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="#!">Action</a>
+                                        <a class="dropdown-item" href="#!">Another action</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="#!">Something else here</a>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="col-sm-9 text-secondary">
-                          Kenneth Valdez
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <h6 class="mb-0">Email</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                          fip@jukmuh.al
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <h6 class="mb-0">Phone</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                          (239) 816-9029
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <h6 class="mb-0">Mobile</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                          (320) 380-4539
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-3">
-                          <h6 class="mb-0">Address</h6>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                          Bay Area, San Francisco, CA
-                        </div>
-                      </div>
-                      <hr>
-                      <div class="row">
-                        <div class="col-sm-12">
-                          <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-    
 
-    
-    
+                </nav
+
+                    <!--profile div -->
+                    <div id="profile-class">
+                        <div class="container">
+                            <div class="main-body">
+                            
+                            
+                                  <div class="row gutters-sm">
+                                    <div class="col-md-4 mb-3">
+                                      <div class="card profile">
+                                        <div class="card-body">
+                                          <div class="d-flex flex-column align-items-center text-center">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                                            <div class="mt-3">
+                                              <h4>{{data.[0].firstname}} {{data.[0].lastname}}</h4>
+                    
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                    
+                                    </div>
+                                    <div class="col-md-8">
+                                      <div class="card mb-3">
+                                        <div class="card-body">
+                                          <div class="row">
+                                            <div class="col-sm-3">
+                                              <div id="id" val></div>
+                                              <h6 class="mb-0">Full Name</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary" id="myName">
+                                              {{data.[0].firstname}} {{data.[0].lastname}}
+                                            </div>
+                                          </div>
+                                          <hr>
+                                          <div class="row">
+                                            <div class="col-sm-3">
+                                              <h6 class="mb-0">Email</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary" id="myEmail">
+                                              {{data.[0].email}}
+                                            </div>
+                                          </div>
+                                          <hr>
+                                          <div class="row">
+                                            <div class="col-sm-3">
+                                              <h6 class="mb-0">Phone</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary" id="myPhone">
+                                              {{data.[0].phone}}
+                                            </div>
+                                          </div>
+                                          <hr>
+                                          <div class="row">
+                                            <div class="col-sm-3">
+                                              <h6 class="mb-0">Profession</h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary" id="myPhone">
+                                              {{data.[0].Profession}}
+                                            </div>
+                                          </div>
+                                          <hr>
+                                          <div class="row">
+                                            <div class="col-sm-3">
+                                              <h6 class="mb-0">About me </h6>
+                                            </div>
+                                            <div class="col-sm-9 text-secondary" id="myAddress">
+                                              {{data.[0].About_me}}
+                                            </div>
+                                            <input type="hidden" id="userId" name="custId" value={{data.[0].user_id}}>
+                                          </div>
+                                          <hr>
+                                          <div class="row">
+                                            <div class="col-sm-12">
+                                              <a class="btn btn-info " target="__blank" href="https://www.bootdey.com/snippets/view/profile-edit-data-and-skills">Edit</a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                        
+                    
+                        
+                        
+                                    </div>
+                                  </div>
+                        
+                                </div>
+                            </div>
+                    
+                        </div>
+
+                      <hr>
+                      <div class="col-md-8" id="status">
+                        <div class="card mb-3">
+                          <div class="card-body">
+                            <div class="row">
+                              <div class="col-sm-3">
+                                <h6 class="mb-0"> profile first created: </h6>
+                              </div>
+                              <div class="col-sm-9 text-secondary">
+                                {{data.[0].Created_at}}
+                              </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                              <div class="col-sm-3">
+                                <h6 class="mb-0">number of Notes: </h6>
+                              </div>
+                              <div class="col-sm-9 text-secondary">
+                               {{data.[1].numberOfUserNotes}}
+                              </div>
+                            </div>
+                            <hr>
+
+                          </div>
+                        </div>
+          
+      
+          
+          
+                      </div>
                 </div>
-              </div>
-    
             </div>
         </div>
-
-    </div>
-        <script src="/src/profile.js"></script>
-</body>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="profile.js"></script>
+        <script src="sidebar.js"></script>
+    </body>
 </html>

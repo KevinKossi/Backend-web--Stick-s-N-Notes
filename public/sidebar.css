@@ -76,6 +76,10 @@
   }
 }
 
+.profile{
+  background: linear-gradient(#006AC7  40%, #D1EAFF 60%);
+}
+
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);
