@@ -3,10 +3,11 @@ let myName = document.querySelector("#myName")
 let myEmail = document.querySelector("#myEmail")
 let myPhone = document.querySelector("#myPhone")
 let myAddress = document.querySelector("#myAddress")
+let dashboard = document.querySelector("#Dashboard")
 
 console.log(" script is loaded! ");
 
-
+dashboard.addEventListener('click', )
 
       const profileData = async (userId) => {
     

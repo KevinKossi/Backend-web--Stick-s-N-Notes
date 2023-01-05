@@ -1,10 +1,8 @@
  // code is inspired from: https://www.youtube.com/watch?v=Efo7nIUF2JY&ab_channel=dcode
 
-
+let count = 0 ;
 const notesContainer = document.getElementById("app");
-console.log(notesContainer + "container");
 const addNoteButton = notesContainer.querySelector(".add-note");
-console.log(addNoteButton + " adding button ");
 let x = document.getElementById("profile-class");
 let notes = document.getElementById("app");
 let state = document.getElementById("status")
@@ -12,91 +10,165 @@ let empty = document.querySelector("#empty")
 let profile = document.querySelector("#profile")
 
 const userId = document.querySelector("#userId").value
+const allNotes = Array.from(document.querySelectorAll(".note"))
+const deleteBtns = Array.from(document.querySelectorAll(".btn-danger"))
+const saveBtns = Array.from( document.querySelectorAll(".btn-success"))
+
+//  change background color for each textarea that exists:
+allNotes.forEach(el =>{
+
+  el.addEventListener("dblclick", () => {
+
+   let color =  prompt(" change the color of your note: ");
+    let noteid = el.id.split("_")[1]
+
+    if (color != '') {
+      el.style.background = color
+      updateColor(color,noteid);
+    }
+  })
+  
 
 
+})
 
-getNotes().forEach((note) => {
-  const noteElement = createNoteElement(note.id, note.content);
-  notesContainer.insertBefore(noteElement, addNoteButton);
+deleteBtns.forEach(btn => {
+btn.addEventListener("click", () =>
+{
+  let noteId = btn.value
+
+  const doDelete = confirm(
+    "Are you sure you wish to delete this sticky note?"
+  );
+
+  if (doDelete) {
+    deleteNote(userId, noteId);
+    btn.parentElement.remove();
+  }
+})
+ 
 });
+
+saveBtns.forEach(btn => {
+  let noteId = btn.value
+  let textarea = document.getElementById(`text_${noteId}`);
+  let content
+  textarea.addEventListener('input', () => {
+    content = document.getElementById(`text_${noteId}`).value;
+  })
+
+  btn.addEventListener("click", () =>
+  {
+    updateNote(noteId, content);
+  })
+   
+  });
+
+
 
 addNoteButton.addEventListener("click", () => addNote());
 
-function getNotes() {
-  return JSON.parse(localStorage.getItem("stickynotes-notes") || "[]");
-}
-
-function saveNotes(notes) {
-  localStorage.setItem("stickynotes-notes", JSON.stringify(notes));
-}
-
-function createNoteElement(id, content) {
-  const element = document.createElement("textarea");
 
 
-  element.classList.add("note");
-  element.value = content;
-  element.placeholder = "Empty Sticky Note";
+
+const addNote = async() => {
   
-
-  element.addEventListener("change", () => {
-    updateNote(id, element.value);
-  });
-
-  element.addEventListener("dblclick", () => {
-    const doDelete = confirm(
-      "Are you sure you wish to delete this sticky note?"
-    );
-
-    if (doDelete) {
-      deleteNote(id, element);
-    }
-  });
-
-  return element;
-}
-
-function addNote() {
-  const notes = getNotes();
   const noteObject = {
-    id: Math.floor(Math.random() * 100000),
-    content: ""
+    userid:userId ,
+    content: `empty${++count}`
   };
-  empty.style.display =  "none";
+
+  if (empty) {
+    empty.style.display =  "none";
+  }
+
+  const response = await fetch('/notes', {method: "POST", headers:{'Content-Type':'application/json'},body: JSON.stringify(noteObject)})
+
+  const data = await response.json();
+
+if (data.insertion == true) {
+
+  createNoteElement(data[0])
+  alert(data[0]["message"])
+
+} else {
+  alert(data[0]["message"])
+} 
+}
+
+const createNoteElement = (data) =>  {
+  console.log('ik zit erin')
+  const element = document.createElement("textarea");
+  const saveBtn = document.createElement("button");
+  const delBtn = document.createElement("button");
+  const div  = document.createElement("div");
+
+
+  // voor textarea
+  element.classList.add("note");
+  element.placeholder = "Empty Sticky Note";
+  element.id = `text_${data["note_id"]}`;
+  element.style.backgroundColor = 'lightblue';
+
+  //save button
+  saveBtn.type = "button";
+  saveBtn.classList.add("btn btn-success");
+  saveBtn.id = "saveBtn";
+  saveBtn.value = `${data["note_id"]}`
+  saveBtn.innerHTML = "Save"
+
+ //delete buttton
+  delBtn.type = "button";
+  delBtn.classList.add("btn btn-danger");
+  delBtn.id = "deleteBtn";
+  delBtn.value = `${data["note_id"]}`
+  delBtn.innerHTML = "Delete"
+
+//div
+
+div.classList.add("text-container");
+div.appendChild(element)
+div.appendChild(saveBtn)
+div.appendChild(delBtn)
+
+notesContainer.appendChild(div);
+
+  return div;
+}
+
+//update color of the note 
+const updateColor = async (color,noteid) => {
+ const response  = await fetch('/color', {method: "PUT",headers:{	'Content-Type':'application/json'},body:JSON.stringify({Bg_color:color,noteid:noteid ,userid:userId})})
+ const data =await response.json()
+ alert(data.message)
+
+ // logbar: changed element met id = ? to color
+
+}
+
+const updateNote = async (noteID, newContent) => {
+
+  const updata = {
+    userid: userId,
+    noteid: noteID,
+    content: newContent
+
+  }
+  const response = await fetch(`/notes`,{method:"PUT", headers:{	'Content-Type':'application/json'}, body: JSON.stringify(updata)})
   
-  const noteElement = createNoteElement(noteObject.id, noteObject.content);
-  notesContainer.insertBefore(noteElement, addNoteButton);
-
-  notes.push(noteObject);
-  saveNotes(notes);
+  const data = await response.json()
+  alert(data.message)
 }
 
-function updateNote(id, newContent) {
-  const notes = getNotes();
-  const targetNote = notes.filter((note) => note.id == id)[0];
+const deleteNote = async(userID, noteID) =>  {
+ const response = await fetch(`/notes?user_id=${userID}&note_id=${noteID}`,{method:"DELETE"})
 
-  targetNote.content = newContent;
-  saveNotes(notes);
+ const data = await response.json();
+ alert(data.message)
+
+
 }
 
-function deleteNote(id, element) {
-  const notes = getNotes().filter((note) => note.id != id);
-
-  saveNotes(notes);
-  notesContainer.removeChild(element);
-}
-
-function Myfunction() {
-
-  // if (x.style.display === "none") {
-  //   x.style.display = "block";
-  // } else {
-  //   x.style.display = "none";
-  // }
-  x.style.display = "block";
-  notes.style.display = "none";
-  state.style.display = "none";
-}
 
 profile.addEventListener('click', () => {
 

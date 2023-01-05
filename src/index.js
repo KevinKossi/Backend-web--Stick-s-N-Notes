@@ -211,48 +211,39 @@ app.post('/login',   (req, response) => {
 
 // for the notes 
 app.post('/notes', (req,res) => {
-  const userId = req.body.userId
+  const userId = req.body.userid
   const content = req.body.content
-  pool.query("INSERT INTO notes (user, content) VALUES (?, ?)", [userId, content], (error, results) => {
+  pool.query("INSERT INTO notes (user_id, content) VALUES (?, ?)", [userId, content], (error, results) => {
 
     if (error) {
         console.log(error);
-        let bad = 'the note already exists ';
+        let bad = 'error creating a new note in the database ';
         const message = {
-            "note": bad,
+            "message": bad,
             "insertion": false
         };
-        return res.render("app", {
-          message
-      });
+        return res.json(message);
     }
     else {
-        let good = "data has been succesfully transfered to the database";
+        
 
-        pool.query("SELECT id FROM notes WHERE user = ? ", [userId], (error, resu) => {
+        pool.query(`SELECT * FROM notes WHERE user_id = ? AND content LIKE ?`, [userId,content], (error, resu) => {
             if (error) {
                 console.log(error);
                 let bad = 'cannot receive ID from the user ';
                 const message = {
-                    "id": bad,
-                    "registration": false
+                    "message": bad,
+                    "insertion": false
                 };
-                return res.render("signup", {
-                  message
-              });
+                return res.json(message);
             } else {
-                // const result = {
-                //     "reason": good,
-                //     "registration": true,
-                //     "userId": resu[0].id,
-                //     "email": Email,
-                //     "firstname": Firstname,
-                //     "lastname": Lastname,
-                //     "auth": true
-                // }
-                
-                // module.exports.userData = result;
-                return res.redirect("/app");
+
+              let good = "new note has been succesfully inserted to the database";
+              resu[0].insertion = true
+              resu[0].message = good
+              console.log(resu);
+
+                return res.json(resu);
             }
         })
     }
@@ -260,9 +251,9 @@ app.post('/notes', (req,res) => {
 
 })
 app.delete('/notes', (req,res) => {
-  // const userId = userData.userId
-  // const noteId = req.params.noteId
-  const resu = {
+  const userId = req.query.user_id
+  const noteId = req.query.note_id
+  const data = {
     message:"",
     deletion:false
 
@@ -271,30 +262,37 @@ app.delete('/notes', (req,res) => {
   pool.query('DELETE FROM notes WHERE note_id = ?  AND user_id = ?', [noteId,userId], (err,result ) => {
     if (err) {
       console.log(err)
+      data.message = " there has been a problem, deleting your precious note";
+    
+      return res.json(data)
 
     } else {  
-      resu.message = " note has been succesfully deleted !";
-      resu.deletion = true 
-      
-      return res.render("app", {
-        resu
-      }); }
+      data.message = " note has been succesfully deleted !";
+      data.deletion = true 
+      return res.json(data); } // later misschien nog in zo een logbar 
   })
   
 })
 
 app.put('/notes', (req,res) => {
-  // const userId = userData.userId
+
+ const userId = req.body.userid;
+ const noteId = req.body.noteid;
+ const content = req.body.content
   
-  pool.query('SELECT * FROM notes WHERE user_id = ? ', [userId], (err,result ) => {
+  pool.query('UPDATE notes SET content = ?  WHERE user_id = ? AND note_id = ?  ', [content, userId, noteId], (err,result ) => {
     if (err) {
       console.log(err)
 
     } else {  
+      console.log(result + "line 297");
+      const data = { 
+        update: true,
+        message: " succesfully updated the note in the database ! "
 
-      return response.render("app", {
-        result
-      }); }
+      }
+      return res.json(data)
+    }  
   })
 
   
@@ -316,13 +314,38 @@ app.get('/notes', (req, res) => {
   })
 })
 
+app.put('/color', (req,res) => {
+
+  const color = req.body.Bg_color;
+  const noteId = req.body.noteid;
+  const userId = req.body.userid
+   
+   pool.query('UPDATE notes SET Bg_color = ?  WHERE user_id = ? AND note_id = ? ', [color, userId, noteId], (err,result ) => {
+     if (err) {
+       console.log(err)
+ 
+     } else {  
+       const data = { 
+         update: true,
+         message: " succesfully updated color in the database ! "
+ 
+       }
+       return res.json(data)
+     }  
+   })
+ 
+   
+ })
+
+
 // for the user 
-app.get('/profile', (req, res) => {
+// ik gebruik deze niet donc
+// app.get('/profile', (req, res) => {
 
-  const userId = req.query.uid
+//   const userId = req.query.uid
 
-  pool.query("SELECT * FROM users WHERE user_id = ? ", [userId], (err, res) => {
+//   pool.query("SELECT * FROM users WHERE user_id = ? ", [userId], (err, res) => {
     
-  })
+//   })
 
-})
+// })
