@@ -13,4 +13,3 @@ const pool = mysql.createPool({
 
 module.exports = pool
 
-let query = " SELECT * FROM notes AS n JOIN users AS u ON u.user_id = n.user_id WHERE n.user_id = ? "

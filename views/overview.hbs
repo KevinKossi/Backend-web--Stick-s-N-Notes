@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>S'N'N - Overview</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="/public/assets/sticky.ico" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link href="app.css" rel="stylesheet" />
+    <link rel="stylesheet" href="sidebar.css">
+    <link rel="stylesheet" href="overview.css">
+</head>
+
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar-->
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading border-bottom bg-light">Sticks N Notes</div>
+            <div class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" id="dashboard" href="#!">Dashboard</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Overview</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Events</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3 " id="profile"
+                    href="#">Profile</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">logout</a>
+            </div>
+        </div>
+        <!-- Page content wrapper-->
+        <div id="page-content-wrapper">
+            <!-- Top navigation-->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <div class="container-fluid">
+                    <button class="btn btn-primary" id="sidebarToggle">Menu</button>
+                    <button class="btn btn-dark" id="refreshNotes" style="margin-left: 50px ;">refresh list</button>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation"><span
+                            class="navbar-toggler-icon"></span></button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div class="wrap">
+                            <div class="search">
+                                {{!-- SEARCHBAR --}}
+                                <input type="text" class="searchTerm" id="searchTerm"
+                                    placeholder="looking for a certain note ?">
+                                <button type="submit" class="searchButton">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </nav <!-- Page content-->
+            <div class="container-fluid">
+
+                <!-- this source code is inspired from Dcode-->
+
+                <div id="app">
+
+                    {{#each result }}
+
+                    {{!-- <div class="text-container">
+                        <textarea name="note" id="text_{{note_id}}" class="note" cols="20" rows="10"
+                            style="background-color: {{Bg_color}};">{{content}}</textarea>
+                        <button type="button" class="btn btn-success" id="saveBtn" value={{note_id}}>Save</button>
+                        <button type="button" class="btn btn-danger" id="deleteBtn" value={{note_id}}>Delete</button>
+                    </div>
+                     --}}
+
+                    {{!-- https://www.geeksforgeeks.org/html-flip-a-card/ --}}
+
+                    <div class="card" style="margin: 0px 5px 0px 5px;">
+                            <div class="text-container">
+                        <div class="card-inner">
+                            <div class="card-front">
+                              <textarea name="note" id="text_{{note_id}}" class="note" cols="20" rows="10"
+                            style="background-color: {{Bg_color}};">{{content}}</textarea>
+                            <button type="button" class="btn btn-success" id="saveBtn" value={{note_id}}>Save</button>
+                            <button type="button" class="btn btn-danger" id="deleteBtn" value={{note_id}}>Delete</button>
+                    
+                            </div>
+
+                            <div class="card-back" style="background-color: {{Bg_color}};" >
+                                <h3>Information</h3>
+                                <p>#words: {{content.length}} words
+                                    <br>created: {{birth}}
+                                    <br>color: {{Bg_color}}
+                                </p>
+
+                            </div>
+                        </div>
+                        </div>
+
+                    </div>
+
+
+                    {{/each}}
+
+<hr>    
+                {{#if result}}
+                {{!-- code inspired from https://w3schoolweb.com/how-to-create-a-pagination-button-css/ --}}
+                <div class="pagination">
+                <a href="#" class="pagination-item  " id="prev">prev</a>
+                <a href="#" class="pagination-item active">{{result.[1].page}}</a>
+                <a href="#" class="pagination-item " id="next">next</a>
+                </div>
+                {{/if}}
+
+                    {{#if damn.empty }}
+                    <h4 id="empty"> {{ damn.empty }} </h4>
+                    {{/if }}
+                </div>
+                <div class="message">
+                                       {{#each errors }}
+                    <h4 id="empty"> {{ errors.msg }} </h4>
+                    {{/each }} 
+                </div>
+
+                <input type="hidden" id="userId" name="userId" value={{result.[0].user_id}}>
+
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="app.js"></script>
+    <script src="sidebar.js"></script>
+    <script src="overview.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+
+{{!-- hier moet limit and offset, and searchbar --}}

@@ -42,7 +42,7 @@ btn.addEventListener("click", () =>
   );
 
   if (doDelete) {
-    deleteNote(userId, noteId);
+    deleteNote(noteId);
     btn.parentElement.remove();
   }
 })
@@ -65,8 +65,11 @@ saveBtns.forEach(btn => {
   });
 
 
+  if (addNoteButton != undefined) {
+    addNoteButton.addEventListener("click", () => addNote());
+  }
 
-addNoteButton.addEventListener("click", () => addNote());
+
 
 
 
@@ -86,23 +89,24 @@ const addNote = async() => {
 
   const data = await response.json();
 
-if (data.insertion == true) {
+if (data[0].insertion == true) {
 
   createNoteElement(data[0])
   alert(data[0]["message"])
 
 } else {
   alert(data[0]["message"])
+
 } 
 }
 
 const createNoteElement = (data) =>  {
-  console.log('ik zit erin')
+
   const element = document.createElement("textarea");
   const saveBtn = document.createElement("button");
   const delBtn = document.createElement("button");
   const div  = document.createElement("div");
-
+  let content
 
   // voor textarea
   element.classList.add("note");
@@ -110,19 +114,57 @@ const createNoteElement = (data) =>  {
   element.id = `text_${data["note_id"]}`;
   element.style.backgroundColor = 'lightblue';
 
+// kleuren geven
+element.addEventListener("dblclick", () => {
+
+  let color =  prompt(" change the color of your note: ");
+   let noteid = data["note_id"]
+
+   if (color != '') {
+     element.style.background = color
+     updateColor(color,noteid);
+   }
+ })
+
+  element.addEventListener('input', () => {
+    content = document.getElementById(element.id).value;
+  })
+
   //save button
   saveBtn.type = "button";
-  saveBtn.classList.add("btn btn-success");
+  saveBtn.classList.add("btn-success");
+  saveBtn.classList.add("btn");
   saveBtn.id = "saveBtn";
   saveBtn.value = `${data["note_id"]}`
   saveBtn.innerHTML = "Save"
 
+  saveBtn.addEventListener("click", () =>
+  {
+    updateNote(saveBtn.value, content);
+  })
+
  //delete buttton
   delBtn.type = "button";
-  delBtn.classList.add("btn btn-danger");
+  delBtn.classList.add("btn-danger");
+  delBtn.classList.add("btn");
+
   delBtn.id = "deleteBtn";
   delBtn.value = `${data["note_id"]}`
   delBtn.innerHTML = "Delete"
+
+  delBtn.addEventListener("click", () =>
+{
+
+
+  const doDelete = confirm(
+    "Are you sure you wish to delete this sticky note?"
+  );
+
+  if (doDelete) {
+    deleteNote(delBtn.value);
+    delBtn.parentElement.remove();
+  }
+})
 
 //div
 
@@ -131,7 +173,7 @@ div.appendChild(element)
 div.appendChild(saveBtn)
 div.appendChild(delBtn)
 
-notesContainer.appendChild(div);
+notesContainer.insertBefore(div, addNoteButton);
 
   return div;
 }
@@ -160,8 +202,8 @@ const updateNote = async (noteID, newContent) => {
   alert(data.message)
 }
 
-const deleteNote = async(userID, noteID) =>  {
- const response = await fetch(`/notes?user_id=${userID}&note_id=${noteID}`,{method:"DELETE"})
+const deleteNote = async(noteID) =>  {
+ const response = await fetch(`/notes?user_id=${userId}&note_id=${noteID}`,{method:"DELETE"})
 
  const data = await response.json();
  alert(data.message)
