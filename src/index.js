@@ -63,7 +63,7 @@ pool.getConnection(function(err) {
   }))
 
 
-
+let isLoggedIn = false 
 
 // URL ENDPOINTS
 
@@ -226,11 +226,16 @@ app.post('/login',[
           message.msg = 'email incorrect ';
           console.log(message.msg);
          return response.json(message);
+
       }
+      
       
 
     });
 });
+
+
+  
 
 // del user check
 app.delete('/user', (req, res) => {
@@ -366,6 +371,7 @@ app.put('/user', (req, res) => {
 //----------------------------------
 
 // for the notes
+
 // insert new note check 
 app.post('/notes', (req,  res) => {
   const userId = req.body.userId
@@ -486,14 +492,44 @@ app.put('/notes', (req,res) => {
   
 })
 
-
+// get notes check 
 app.get('/notes', (req, res) => {
-  const id = req.query.userId;
-  // LIMIT AND OFFSET
-  const damn = {};
-  pool.query("SELECT * FROM notes WHERE user_id = ? ", [id], (err, result) => {
+  const id = parseInt(req.query.userId);
+  let page = parseInt(req.query.page);
+  let limit = parseInt(req.query.limit);
+  let offset = (page - 1) * limit
+
+  if (!req.query.page || !req.query.limit ) {
+    return res.status(404).send(" please fill in the URL correctly! '/notes?userId=[id user]&page=[page]&limit=[#results]'") 
+  }
+
+  if (!req.query.userId) {
+    return res.status(404).send(" can't find the userId ! '/notes?userId=[id user]&page=[page]&limit=[#results]'")
+  }
+
+
+  let data = []
+  const results = {
+
+  }
+  let NOnotes 
+  pool.query("SELECT COUNT(note_id) AS NoNotes FROM notes where user_id = ? ", [id], (err, resu)=> {
     if (err) {
       console.log(err);
+      return res.status(500).send(err)}
+    else {
+      if (resu.length > 0) {
+        NOnotes = resu[0].NoNotes
+        console.log(NOnotes);
+
+      }}
+  })
+
+  const damn = {};
+  pool.query("SELECT *  FROM notes WHERE user_id = ? LIMIT ? OFFSET ? ", [id, limit, offset], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send(err)
     } else {
       if (result.length < 1) {
         console.log(result);
@@ -505,13 +541,29 @@ app.get('/notes', (req, res) => {
 
         return res.json(damn);
       } else {
+        if (offset > 0) {
+          results.previous = {
+            page: page - 1,
+            limit: limit,
+          }
+        }
+        if (page * limit < NOnotes) {
+
+        results.next = {
+          page: page + 1,
+          limit: limit,
+        }
+      
+      }
+      data.push(results);
+      data.push(result);
         console.log(result);
-        return res.json(result);
+        return res.json(data);
       }
     }
   });
 })
-
+// check
 app.put('/color', (req,res) => {
 
   const color = req.body.Bg_color;
@@ -535,6 +587,7 @@ app.put('/color', (req,res) => {
    
  })
 
+
 app.get('/search/:key', (req,res) => {
 
 const key = req.params.key;
@@ -556,15 +609,15 @@ if(key === 'undefined'){
     else{
 
       let note = `%${key}%`
-      pool.query(`SELECT * FROM notes WHERE content LIKE ? AND user_id = ? LIMIT 10`,[note, userId],(error,results) =>{
+      pool.query(`SELECT * FROM notes WHERE content LIKE ? AND user_id = ?`,[note, userId],(error,results) =>{
         if(error){
           console.log(error)
 
         }
         if(results){
-            food_data = JSON.stringify(results);
+           
 
-            return res.send(food_data);
+            return res.json(results)
         }
      });
   }
@@ -607,3 +660,6 @@ app.get('/search/', (req,res) => {
     }
   
   })
+
+
+  // auth users only en dan enkel nog de search 
