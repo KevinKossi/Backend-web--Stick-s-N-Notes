@@ -10,18 +10,13 @@ const mysqlStore = require('express-mysql-session')(session);
 
 const pool = require("./db")
 let Router = require('./routes/Router')
-require("./global")
+global.isLoggedIn = false
 
 const port = process.env.PORT || 3250;
 app.listen(port, () => console.info('Server started at port 3250'))  
 
 
 app.use(Router)
-
-app.use((req, res, next) => {  // We geven hier de parameters request, response en next (die de request gaat doorsturen naar de volgende functie)
-    console.log(`${new Date().toString()} => ${req.originalUrl}`, req.body)  // We loggen de huidige datum en de URL
-    next()  // Als we next hier niet aanroepen zal de browser de pagina eindeloos blijven laden. Eventueel kunnen we hier bvb ook een res.send('blabla') terugsturen als we de executie van deze paginga willen afbreken.
-  })
 
   // waar dat de frontend zich gaat bevinden
 const publicDirectory = path.join(__dirname, '../public');
@@ -67,7 +62,7 @@ let isLoggedIn = false
 
 // URL ENDPOINTS
 
-// register user check
+// register user 
 app.post('/register',  [
   body('telephone').isMobilePhone().withMessage("no regional code, just start your mobile phone with 0"),
   body('email').trim().isEmail().withMessage('Email must be a valid one.'),
@@ -145,8 +140,8 @@ app.post('/register',  [
                     "lastname": Lastname,
                     "auth": true
                 }
-
-                return res.redirect(`/app?userId=${resu[0].user_id}`);
+                global.isLoggedIn = true;
+                return res.redirect(`/user?userId=${resu[0].user_id}`);
             }
         })
     }
@@ -161,13 +156,11 @@ app.post('/register',  [
       "registration": false
 
     }
-    return res.render("signup", {
-      message
-  });
+    return res.json(message)
     
   }
 });
-// login check --> almost 
+// login user
 app.post('/login',[
   body('email').trim().isEmail().withMessage('Email must be a valid one.'),
 ]  ,
@@ -212,8 +205,8 @@ app.post('/login',[
 
         if(verify){
 
-          global.loggedIn = true;
-          return  response.redirect(`/app?userId=${results[0]["user_id"]}`);
+          global.isLoggedIn = true;
+          return  response.redirect(`/user?userId=${results[0]["user_id"]}`);
 
           }else{
             message.msg = `password incorrect`;
@@ -234,11 +227,14 @@ app.post('/login',[
     });
 });
 
-
-  
+app.get("/logout", (req, res) => {
+  global.isLoggedIn = false;
+  return res.redirect("/login");
+});
 
 // del user check
 app.delete('/user', (req, res) => {
+  global.isLoggedIn == true ? console.log("user is logged in") : res.redirect(`/login`);
   const userId = req.query.userId;
   pool.query("DELETE FROM users WHERE user_id =?", [userId], (error,result) => {
     if (error) {
@@ -327,7 +323,7 @@ app.get('/user', (req, res) => {
   })
   }
 })
-// put users check
+// update user info check
 app.put('/user', (req, res) => {
   const userId = req.body.userId;
   const Profession = req.body.profession;
@@ -369,6 +365,7 @@ app.put('/user', (req, res) => {
   })
 
 //----------------------------------
+
 
 // for the notes
 
@@ -563,7 +560,7 @@ app.get('/notes', (req, res) => {
     }
   });
 })
-// check
+// change note color check
 app.put('/color', (req,res) => {
 
   const color = req.body.Bg_color;
@@ -587,79 +584,45 @@ app.put('/color', (req,res) => {
    
  })
 
+// search note based on content
+app.get('/search', (req,res) => {
 
-app.get('/search/:key', (req,res) => {
+let key = '' ;
+let keyQuery = '';
+let note;
+let colorQuery = ''
+const userId = req.query.userId;
+if (req.query.key) {
+  key = req.query.key
+   note = `%${key}%`
+   keyQuery = `AND content LIKE ? `
+}
 
-const key = req.params.key;
-const userId = req.query.userid
+if (req.query.color) {
+  color = req.query.color
 
-if(key === 'undefined'){
-   
-  pool.query(`SELECT * FROM notes WHERE user_id = ? `,(error,result) => {
-    if(error){
+   colorQuery = `AND Bg_color LIKE "%${color}%" `
+}
 
-      console.log(error)
 
-    }if(result){
 
-            return res.json(result);
-        }
-      });
-    }
-    else{
-
-      let note = `%${key}%`
-      pool.query(`SELECT * FROM notes WHERE content LIKE ? AND user_id = ?`,[note, userId],(error,results) =>{
+      pool.query(`SELECT * FROM notes WHERE user_id = ? ${keyQuery} ${colorQuery}`,[userId, note],(error,results) =>{
         if(error){
-          console.log(error)
+          return res.status(404).json({example: " http://localhost:3250/search?userId=[id user]&color=[color of note]&key=[content]"})
 
         }
-        if(results){
-           
+        if(results.length < 1){
 
-            return res.json(results)
+            return res.json({msg: "nohting to be found, pleas check your queries",example: " http://localhost:3250/search?userId=[id user]&color=[color of note]&key=[content]"})
+        }
+        else{
+          return res.json(results)
         }
      });
-  }
+  
 
 })
 
-app.get('/search/', (req,res) => {
-
-  const key = req.query.content;
-  const userId = req.query.userid;
-  const Bg_color = req.query.Bg_color;
-  
-  if(key === 'undefined'){
-     
-    pool.query(`SELECT * FROM notes WHERE user_id = ? `,(error,result) => {
-      if(error){
-  
-        console.log(error)
-  
-      }if(result){
-  
-              return res.json(result);
-          }
-        });
-      }
-      else{
-  
-        let note = `%${key}%`
-        pool.query(`SELECT * FROM notes WHERE content LIKE ? AND user_id = ? LIMIT 10`,[note, userId],(error,results) =>{
-          if(error){
-            console.log(error)
-  
-          }
-          if(results){
-              food_data = JSON.stringify(results);
-  
-              return res.send(food_data);
-          }
-       });
-    }
-  
-  })
 
 
-  // auth users only en dan enkel nog de search 
+  // auth users only en dan enkel nog de search + readMe
